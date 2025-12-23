@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 export default function Home() {
@@ -32,11 +34,12 @@ export default function Home() {
 
         <div className="relative z-10 flex flex-col items-start gap-4 sm:gap-6 text-left w-full">
           <h2 className="max-w-xs sm:max-w-md text-2xl sm:text-3xl font-semibold leading-8 sm:leading-10 tracking-tight text-black dark:text-zinc-50">
-            Islombek Kamoliddinov Sayfiddin o'g'li
+            Ushbu sahifa sinov tariqasida yaratildi
           </h2>
-          <p className="max-w-md text-base sm:text-lg leading-7 sm:leading-8 text-zinc-600 dark:text-zinc-500">
-            Hozirda <strong>Broller</strong> kompaniyasi uchun website yaratish jarayoni olib borilmoqda.{" "}
-            <span className="text-black sm:text-2xl font-bold block mt-2">
+          <p className="max-w-md text-base sm:text-lg leading-7 sm:leading-8 text-zinc-600 dark:text-zinc-400">
+            Hozirda <strong className="text-black">Broller</strong> kompaniyasi
+            uchun website yaratish jarayoni olib borilmoqda.{" "}
+            <span className="text-black sm:text-2xl font-semibold block mt-2">
               2026-yil Fevral
             </span>{" "}
             oyidan sahifani ommaviy deploy qilinadi
@@ -44,7 +47,39 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full">
-          Undan oldingi versiyalar sinov tariqasida taqdim etiladi!
+          <div className="w-full max-w-md border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 sm:p-6 bg-white/80 dark:bg-black/80 backdrop-blur-sm shadow-sm">
+            <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-4">
+              Developer bilan bog'laning
+            </h3>
+            <div className="flex items-center gap-4">
+              <div className="relative h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                <Image
+                  src="/avatar.PNG"
+                  alt="Developer"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-1 gap-3">
+                <div>
+                  <p className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                    Islombek Kamoliddinov
+                  </p>
+                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                    Full-stack Developer
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => window.open('https://t.me/justislombek', '_blank')}
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors whitespace-nowrap"
+                >
+                  Chat
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
