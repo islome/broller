@@ -18,10 +18,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico", // asosiy favicon
     shortcut: "/favico.svg",
-    apple: "https://pngimg.com/d/apple_logo_PNG19688.png", // iOS uchun
+    apple: "/apple.png", // iOS uchun
     other: {
       rel: "icon",
-      url: "/icon.png", // qo'shimcha (Android va boshqalar)
+      url: "/favico.svg", // qo'shimcha (Android va boshqalar)
     },
   },
 };

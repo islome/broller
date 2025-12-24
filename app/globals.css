@@ -123,3 +123,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes flipUp {
+  0% {
+    transform: perspective(400px) rotateX(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: perspective(400px) rotateX(90deg);
+    opacity: 0;
+  }
+  51% {
+    transform: perspective(400px) rotateX(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(400px) rotateX(0deg);
+    opacity: 1;
+  }
+}

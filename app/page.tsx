@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -44,6 +45,15 @@ export default function Home() {
             </span>{" "}
             oyidan sahifani ommaviy deploy qilinadi
           </p>
+          <Link
+            href="/register"
+            className="group inline-flex items-center justify-center rounded-md text-base sm:text-lg font-medium bg-black dark:bg-white text-white dark:text-black px-6 py-3 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden relative"
+          >
+            <span className="relative z-10 group-hover:animate-[flipUp_0.6s_ease-in-out]">
+              Ro'yxatdan o'tish
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-zinc-800 to-black dark:from-zinc-200 dark:to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          </Link>
         </div>
 
         <div className="relative z-10 w-full">
@@ -52,7 +62,7 @@ export default function Home() {
               Developer bilan bog'laning
             </h3>
             <div className="flex items-center gap-4">
-              <div className="relative h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+              <div className="relative h-12 w-12 sm:h-16 sm:w-16 shrink-0 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                 <Image
                   src="/avatar.PNG"
                   alt="Developer"
@@ -72,7 +82,9 @@ export default function Home() {
                 </div>
 
                 <button
-                  onClick={() => window.open('https://t.me/justislombek', '_blank')}
+                  onClick={() =>
+                    window.open("https://t.me/justislombek", "_blank")
+                  }
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors whitespace-nowrap"
                 >
                   Chat
