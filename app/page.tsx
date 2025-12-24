@@ -9,7 +9,7 @@ export default function Home() {
       <main className="relative flex min-h-screen w-full flex-col items-start justify-between py-16 px-6 sm:py-32 sm:px-16 bg-white dark:bg-black overflow-hidden">
         <div className="absolute inset-0 z-0 sm:hidden">
           <Image
-            src="/chicken1.jpg"
+            src="/chicken2.jpg"
             alt="Background"
             fill
             className="object-cover opacity-50"
@@ -19,7 +19,7 @@ export default function Home() {
 
         <div className="absolute inset-0 z-0 hidden sm:block">
           <Image
-            src="/farm1.jpg"
+            src="/farm2.jpg"
             alt="Background"
             fill
             className="object-cover opacity-60"
@@ -52,7 +52,7 @@ export default function Home() {
             <span className="relative z-10 group-hover:animate-[flipUp_0.6s_ease-in-out]">
               Ro'yxatdan o'tish
             </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-zinc-800 to-black dark:from-zinc-200 dark:to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <span className="absolute inset-0 bg-linear-to-r from-zinc-800 to-black dark:from-zinc-200 dark:to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
           </Link>
         </div>
 
