@@ -21,7 +21,7 @@ export default function Home() {
             src="/farm1.jpg"
             alt="Background"
             fill
-            className="object-cover opacity-40"
+            className="object-cover opacity-60"
             priority
           />
         </div>
@@ -36,7 +36,7 @@ export default function Home() {
           <h2 className="max-w-xs sm:max-w-md text-2xl sm:text-3xl font-semibold leading-8 sm:leading-10 tracking-tight text-black dark:text-zinc-50">
             Ushbu sahifa sinov tariqasida yaratildi
           </h2>
-          <p className="max-w-md text-base sm:text-lg leading-7 sm:leading-8 text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-md text-base sm:text-lg leading-7 sm:leading-8 text-black dark:text-zinc-400">
             Hozirda <strong className="text-black">Broller</strong> kompaniyasi
             uchun website yaratish jarayoni olib borilmoqda.{" "}
             <span className="text-black sm:text-2xl font-semibold block mt-2">
@@ -72,9 +72,7 @@ export default function Home() {
                 </div>
 
                 <button
-                  onClick={() =>
-                    window.open("https://t.me/justislombek", "_blank")
-                  }
+                  onClick={() => window.open('https://t.me/justislombek', '_blank')}
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors whitespace-nowrap"
                 >
                   Chat
