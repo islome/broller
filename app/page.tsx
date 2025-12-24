@@ -72,7 +72,9 @@ export default function Home() {
                 </div>
 
                 <button
-                  onClick={() => window.open('https://t.me/justislombek', '_blank')}
+                  onClick={() =>
+                    window.open("https://t.me/justislombek", "_blank")
+                  }
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors whitespace-nowrap"
                 >
                   Chat
