@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
-import { toE164, isValidUzPhone } from "@/lib/phone";
+import { toE164, isValidUzPhone, phoneToEmail } from "@/lib/phone";
 
 type Mode = "login" | "signup";
 
@@ -114,7 +114,7 @@ export default function AuthCard({
 
       setLoading(true);
       const { error: xato } = await supabase.auth.signInWithPassword({
-        phone: toE164(phone),
+        email: phoneToEmail(phone),
         password,
       });
       if (xato) {
@@ -144,9 +144,9 @@ export default function AuthCard({
 
       setLoading(true);
       const { data, error: xato } = await supabase.auth.signUp({
-        phone: toE164(phone),
+        email: phoneToEmail(phone),
         password,
-        options: { data: { full_name: name.trim() } },
+        options: { data: { full_name: name.trim(), phone: toE164(phone) } },
       });
       if (xato) {
         setError(authXato(xato.message));
@@ -154,17 +154,22 @@ export default function AuthCard({
         return;
       }
 
-      if (data.session) {
-        // "Confirm phone" o'chirilgan — darrov tizimga kirdik
-        router.push("/");
-        router.refresh();
-      } else {
-        // "Confirm phone" yoqilgan — SMS tasdiqlash kodi kerak bo'ladi
-        setLoading(false);
-        setSuccess(
-          "Ro'yxatdan o'tildi! Telefoningizga yuborilgan tasdiqlash kodini kiriting.",
-        );
+      // Sessiya darrov qaytmasa, kirishga urinib ko'ramiz
+      if (!data.session) {
+        const { error: kirishXato } = await supabase.auth.signInWithPassword({
+          email: phoneToEmail(phone),
+          password,
+        });
+        if (kirishXato) {
+          setLoading(false);
+          setError(
+            "Hisob yaratildi, lekin avtomatik kira olmadik. Supabase'da 'Confirm email' o'chirilganini tekshiring.",
+          );
+          return;
+        }
       }
+      router.push("/");
+      router.refresh();
     }
   }
 
@@ -710,6 +715,8 @@ function authXato(msg: string): string {
     return "Ro'yxatdan o'tish hozircha o'chirilgan.";
   if (m.includes("rate limit") || m.includes("too many"))
     return "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring.";
+  if (m.includes("email not confirmed"))
+    return "Hisob hali tasdiqlanmagan. Supabase'da 'Confirm email' ni o'chiring.";
   if (m.includes("password")) return "Parol talabga javob bermaydi.";
   return msg;
 }

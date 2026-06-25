@@ -21,9 +21,16 @@ export default function Navbar() {
   useEffect(() => {
     const supabase = createSupabaseBrowser();
 
-    const yangila = (u: { user_metadata?: { full_name?: string }; phone?: string } | null) => {
+    const yangila = (
+      u: {
+        user_metadata?: { full_name?: string; phone?: string };
+        phone?: string;
+      } | null,
+    ) => {
       setKirgan(!!u);
-      setIsm(u?.user_metadata?.full_name || u?.phone || null);
+      setIsm(
+        u?.user_metadata?.full_name || u?.user_metadata?.phone || u?.phone || null,
+      );
     };
 
     supabase.auth.getUser().then(({ data }) => yangila(data.user));

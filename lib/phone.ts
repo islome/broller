@@ -14,3 +14,13 @@ export function isValidUzPhone(input: string): boolean {
   const milliy = d.startsWith("998") ? d.slice(3) : d;
   return milliy.length === 9;
 }
+
+/**
+ * Telefonni sintetik email'ga aylantiradi (SMS'siz Email auth uchun).
+ * "+998 90 123 45 67" → "998901234567@broller.uz"
+ */
+export function phoneToEmail(input: string): string {
+  const d = input.replace(/\D/g, "");
+  const milliy = d.startsWith("998") ? d.slice(3) : d;
+  return `998${milliy}@broller.uz`;
+}
