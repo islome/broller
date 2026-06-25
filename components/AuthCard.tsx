@@ -711,8 +711,12 @@ function authXato(msg: string): string {
     return "Bu telefon raqam allaqachon ro'yxatdan o'tgan";
   if (m.includes("phone") && m.includes("disabled"))
     return "Telefon orqali kirish o'chirilgan. Supabase → Authentication → Phone provayderini yoqing.";
-  if (m.includes("signups not allowed") || m.includes("signup is disabled"))
-    return "Ro'yxatdan o'tish hozircha o'chirilgan.";
+  if (
+    m.includes("signups not allowed") ||
+    m.includes("signup is disabled") ||
+    m.includes("signups are disabled")
+  )
+    return "Ro'yxatdan o'tish o'chirilgan. Supabase → Authentication → Email provayderini yoqing.";
   if (m.includes("rate limit") || m.includes("too many"))
     return "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring.";
   if (m.includes("email not confirmed"))
