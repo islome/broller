@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 const links = [
   { href: "/#kategoriyalar", label: "Kategoriyalar" },
@@ -12,6 +14,32 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [kirgan, setKirgan] = useState(false);
+  const [ism, setIsm] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowser();
+
+    const yangila = (u: { user_metadata?: { full_name?: string }; phone?: string } | null) => {
+      setKirgan(!!u);
+      setIsm(u?.user_metadata?.full_name || u?.phone || null);
+    };
+
+    supabase.auth.getUser().then(({ data }) => yangila(data.user));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
+      yangila(session?.user ?? null),
+    );
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function chiqish() {
+    const supabase = createSupabaseBrowser();
+    await supabase.auth.signOut();
+    setOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
@@ -40,12 +68,29 @@ export default function Navbar() {
 
         {/* right */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="hidden rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white no-underline transition-colors hover:bg-zinc-800 md:inline-block"
-          >
-            Kirish
-          </Link>
+          {kirgan ? (
+            <div className="hidden items-center gap-3 md:flex">
+              {ism && (
+                <span className="max-w-[150px] truncate text-sm font-medium text-zinc-700">
+                  {ism}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={chiqish}
+                className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
+              >
+                Chiqish
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white no-underline transition-colors hover:bg-zinc-800 md:inline-block"
+            >
+              Kirish
+            </Link>
+          )}
 
           {/* mobile toggle */}
           <button
@@ -88,13 +133,23 @@ export default function Navbar() {
               </li>
             ))}
             <li>
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="mt-1 block rounded-xl bg-zinc-900 px-3 py-2.5 text-center text-sm font-semibold text-white no-underline"
-              >
-                Kirish
-              </Link>
+              {kirgan ? (
+                <button
+                  type="button"
+                  onClick={chiqish}
+                  className="mt-1 block w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-center text-sm font-semibold text-zinc-700"
+                >
+                  Chiqish{ism ? ` (${ism})` : ""}
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="mt-1 block rounded-xl bg-zinc-900 px-3 py-2.5 text-center text-sm font-semibold text-white no-underline"
+                >
+                  Kirish
+                </Link>
+              )}
             </li>
           </ul>
         </div>

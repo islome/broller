@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
+import { toE164, isValidUzPhone } from "@/lib/phone";
 
 type Mode = "login" | "signup";
 
@@ -12,6 +15,7 @@ export default function AuthCard({
   initialMode?: Mode;
 }) {
   const paneRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const [mode, setMode] = useState<Mode>(initialMode);
 
@@ -20,7 +24,6 @@ export default function AuthCard({
   const [showPass, setShowPass] = useState(false);
 
   // login
-  const [username, setUsername] = useState("");
   const [remember, setRemember] = useState(false);
 
   // signup
@@ -93,9 +96,15 @@ export default function AuthCard({
     setError("");
     setSuccess("");
 
+    const supabase = createSupabaseBrowser();
+
     if (mode === "login") {
-      if (!username.trim()) {
-        setError("Foydalanuvchi nomini kiriting");
+      if (!phone.trim()) {
+        setError("Telefon raqamingizni kiriting");
+        return;
+      }
+      if (!isValidUzPhone(phone)) {
+        setError("Telefon raqamni to'liq kiriting: +998 XX XXX XX XX");
         return;
       }
       if (!password) {
@@ -104,18 +113,24 @@ export default function AuthCard({
       }
 
       setLoading(true);
-      // Bu yerda backend ga login so'rovi yuboriladi
-      console.log("Login submitted:", { username, password, remember });
-      await new Promise((r) => setTimeout(r, 800));
-      setLoading(false);
-      setSuccess("Tizimga muvaffaqiyatli kirdingiz!");
+      const { error: xato } = await supabase.auth.signInWithPassword({
+        phone: toE164(phone),
+        password,
+      });
+      if (xato) {
+        setError(authXato(xato.message));
+        setLoading(false);
+        return;
+      }
+      router.push("/");
+      router.refresh();
     } else {
       if (!name.trim()) {
         setError("Ism familiyangizni kiriting");
         return;
       }
-      if (!phone.trim()) {
-        setError("Telefon raqamingizni kiriting");
+      if (!isValidUzPhone(phone)) {
+        setError("Telefon raqamni to'liq kiriting: +998 XX XXX XX XX");
         return;
       }
       if (password.length < 6) {
@@ -128,11 +143,28 @@ export default function AuthCard({
       }
 
       setLoading(true);
-      // Bu yerda backend ga ro'yxatdan o'tish so'rovi yuboriladi
-      console.log("Register submitted:", { name, phone, password });
-      await new Promise((r) => setTimeout(r, 800));
-      setLoading(false);
-      setSuccess("Ro'yxatdan muvaffaqiyatli o'tdingiz!");
+      const { data, error: xato } = await supabase.auth.signUp({
+        phone: toE164(phone),
+        password,
+        options: { data: { full_name: name.trim() } },
+      });
+      if (xato) {
+        setError(authXato(xato.message));
+        setLoading(false);
+        return;
+      }
+
+      if (data.session) {
+        // "Confirm phone" o'chirilgan — darrov tizimga kirdik
+        router.push("/");
+        router.refresh();
+      } else {
+        // "Confirm phone" yoqilgan — SMS tasdiqlash kodi kerak bo'ladi
+        setLoading(false);
+        setSuccess(
+          "Ro'yxatdan o'tildi! Telefoningizga yuborilgan tasdiqlash kodini kiriting.",
+        );
+      }
     }
   }
 
@@ -504,21 +536,23 @@ export default function AuthCard({
                           </>
                         ) : (
                           <>
-                            {/* Foydalanuvchi nomi */}
+                            {/* Telefon raqam */}
                             <div>
-                              <label className={labelCls}>
-                                Foydalanuvchi nomi
-                              </label>
+                              <label className={labelCls}>Telefon raqam</label>
                               <div className="relative">
                                 <span className={iconCls}>
-                                  <UserIcon />
+                                  <PhoneIcon />
                                 </span>
                                 <input
-                                  type="text"
-                                  placeholder="username"
-                                  value={username}
-                                  onChange={(e) => setUsername(e.target.value)}
-                                  autoComplete="username"
+                                  type="tel"
+                                  placeholder="+998 90 123 45 67"
+                                  value={phone}
+                                  onChange={(e) =>
+                                    setPhone(
+                                      e.target.value.replace(/[^0-9+\s]/g, ""),
+                                    )
+                                  }
+                                  autoComplete="tel"
                                   disabled={loading}
                                   required
                                   className={`${inputCls} pl-10`}
@@ -661,6 +695,23 @@ export default function AuthCard({
       </div>
     </>
   );
+}
+
+// ── auth xatolarini o'zbekchaga tarjima qilish ──
+function authXato(msg: string): string {
+  const m = msg.toLowerCase();
+  if (m.includes("invalid login credentials"))
+    return "Telefon yoki parol noto'g'ri";
+  if (m.includes("already registered") || m.includes("already been registered"))
+    return "Bu telefon raqam allaqachon ro'yxatdan o'tgan";
+  if (m.includes("phone") && m.includes("disabled"))
+    return "Telefon orqali kirish o'chirilgan. Supabase → Authentication → Phone provayderini yoqing.";
+  if (m.includes("signups not allowed") || m.includes("signup is disabled"))
+    return "Ro'yxatdan o'tish hozircha o'chirilgan.";
+  if (m.includes("rate limit") || m.includes("too many"))
+    return "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring.";
+  if (m.includes("password")) return "Parol talabga javob bermaydi.";
+  return msg;
 }
 
 // ── icons ──────────────────────────────────────
