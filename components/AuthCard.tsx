@@ -72,7 +72,7 @@ export default function AuthCard({
       window.history.replaceState(
         null,
         "",
-        next === "signup" ? "/register" : "/login",
+        (next === "signup" ? "/register" : "/login") + window.location.search,
       );
     }, 190);
   }
@@ -122,7 +122,8 @@ export default function AuthCard({
         setLoading(false);
         return;
       }
-      router.push("/");
+      const keyin = new URLSearchParams(window.location.search).get("redirect");
+      router.push(keyin && keyin.startsWith("/") ? keyin : "/");
       router.refresh();
     } else {
       if (!name.trim()) {
@@ -168,7 +169,8 @@ export default function AuthCard({
           return;
         }
       }
-      router.push("/");
+      const keyin = new URLSearchParams(window.location.search).get("redirect");
+      router.push(keyin && keyin.startsWith("/") ? keyin : "/");
       router.refresh();
     }
   }

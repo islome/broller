@@ -21,3 +21,19 @@ export type Mahsulot = {
   tavsiya_etilgan: boolean;
   kategoriya: { nomi: string; slug: string } | null;
 };
+
+export type MahsulotRasm = {
+  id: string;
+  rasm_url: string;
+  alt_matn: string | null;
+  tartib: number;
+};
+
+/** Mahsulot sahifasi uchun to'liq ma'lumot (galereya + texnik xususiyatlar). */
+export type MahsulotToliq = Mahsulot & {
+  model: string | null;
+  artikul: string | null;
+  kafolat_oylari: number;
+  xususiyatlar: Record<string, string | number | boolean | null>;
+  rasmlar: MahsulotRasm[];
+};

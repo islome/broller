@@ -22,7 +22,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/#kategoriyalar" className="text-zinc-600 no-underline hover:text-zinc-900">Kategoriyalar</Link></li>
-              <li><Link href="/#mahsulotlar" className="text-zinc-600 no-underline hover:text-zinc-900">Mahsulotlar</Link></li>
+              <li><Link href="/products" className="text-zinc-600 no-underline hover:text-zinc-900">Mahsulotlar</Link></li>
               <li><Link href="/#nega-broller" className="text-zinc-600 no-underline hover:text-zinc-900">Nega Broller</Link></li>
             </ul>
           </div>

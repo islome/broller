@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import { useStore } from "@/components/site/StoreProvider";
 
 const links = [
   { href: "/#kategoriyalar", label: "Kategoriyalar" },
-  { href: "/#mahsulotlar", label: "Mahsulotlar" },
+  { href: "/products", label: "Mahsulotlar" },
   { href: "/#nega-broller", label: "Nega Broller" },
   { href: "/#aloqa", label: "Aloqa" },
 ];
@@ -17,6 +18,7 @@ export default function Navbar() {
   const [kirgan, setKirgan] = useState(false);
   const [ism, setIsm] = useState<string | null>(null);
   const router = useRouter();
+  const { savatSoni, sevimliSoni, tayyor } = useStore();
 
   useEffect(() => {
     const supabase = createSupabaseBrowser();
@@ -74,7 +76,29 @@ export default function Navbar() {
         </ul>
 
         {/* right */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* sevimlilar */}
+          <Link
+            href="/favourites"
+            aria-label="Sevimlilar"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-zinc-700 transition-colors hover:bg-zinc-100"
+          >
+            <HeartIcon />
+            {tayyor && sevimliSoni > 0 && <CountBadge n={sevimliSoni} />}
+          </Link>
+
+          {/* savat */}
+          <Link
+            href="/cart"
+            aria-label="Savat"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-zinc-700 transition-colors hover:bg-zinc-100"
+          >
+            <BagIcon />
+            {tayyor && savatSoni > 0 && <CountBadge n={savatSoni} />}
+          </Link>
+
+          <span className="mx-1 hidden h-6 w-px bg-zinc-200 md:block" />
+
           {kirgan ? (
             <div className="hidden items-center gap-3 md:flex">
               {ism && (
@@ -162,5 +186,31 @@ export default function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+function CountBadge({ n }: { n: number }) {
+  return (
+    <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-zinc-900 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
+      {n > 99 ? "99+" : n}
+    </span>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+    </svg>
+  );
+}
+
+function BagIcon() {
+  return (
+    <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <path d="M16 10a4 4 0 01-8 0" />
+    </svg>
   );
 }

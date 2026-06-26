@@ -76,7 +76,7 @@ export default async function Home() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="#mahsulotlar"
+                href="/products"
                 className="rounded-2xl bg-white px-6 py-3.5 text-[15px] font-bold text-zinc-900 no-underline transition-all hover:-translate-y-0.5 hover:shadow-xl"
               >
                 Mahsulotlarni ko&apos;rish
