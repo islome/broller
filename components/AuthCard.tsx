@@ -122,8 +122,21 @@ export default function AuthCard({
         setLoading(false);
         return;
       }
+      // Admin bo'lsa to'g'ridan-to'g'ri boshqaruv paneliga yo'naltiramiz
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       const keyin = new URLSearchParams(window.location.search).get("redirect");
-      router.push(keyin && keyin.startsWith("/") ? keyin : "/");
+      let manzil = keyin && keyin.startsWith("/") ? keyin : "/";
+      if (user) {
+        const { data: profil } = await supabase
+          .from("foydalanuvchilar")
+          .select("rol")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (profil?.rol === "admin") manzil = "/admin";
+      }
+      router.push(manzil);
       router.refresh();
     } else {
       if (!name.trim()) {

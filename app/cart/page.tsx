@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
 import CheckoutButton from "@/components/site/CheckoutButton";
+import CheckoutModal from "@/components/site/CheckoutModal";
 import { useStore } from "@/components/site/StoreProvider";
 import { formatNarx } from "@/lib/format";
 
@@ -21,6 +23,8 @@ function birlikNarx(m: {
 export default function CartPage() {
   const { savat, soniOzgartir, savatdan, savatTozala, savatSoni, tayyor } =
     useStore();
+
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const valyuta = savat[0]?.mahsulot.valyuta ?? "UZS";
   const jami = savat.reduce(
@@ -151,8 +155,8 @@ export default function CartPage() {
                 </span>
               </div>
               <CheckoutButton
-                target="/#aloqa"
                 redirectTo="/cart"
+                onAuthed={() => setCheckoutOpen(true)}
                 className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-zinc-800 disabled:opacity-70"
               >
                 Buyurtmani rasmiylashtirish
@@ -169,6 +173,11 @@ export default function CartPage() {
       </section>
 
       <Footer />
+
+      <CheckoutModal
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+      />
     </div>
   );
 }

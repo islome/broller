@@ -13,6 +13,7 @@ export default function CheckoutButton({
   target = "/#aloqa",
   redirectTo = "/cart",
   onBeforeCheckout,
+  onAuthed,
   className,
   children,
 }: {
@@ -21,6 +22,8 @@ export default function CheckoutButton({
   redirectTo?: string;
   /** Checkoutdan oldin bajariladi (masalan, mahsulotni savatga qo'shish) */
   onBeforeCheckout?: () => void;
+  /** Kirgan foydalanuvchi uchun: `target` ga o'tish o'rniga shu chaqiriladi (masalan, modal ochish) */
+  onAuthed?: () => void;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -39,6 +42,11 @@ export default function CheckoutButton({
 
     if (!user) {
       router.push(`/register?redirect=${encodeURIComponent(redirectTo)}`);
+      return;
+    }
+    if (onAuthed) {
+      onAuthed();
+      setLoading(false);
       return;
     }
     router.push(target);
