@@ -13,15 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Broller marketplace website",
-  description: "Created by Full-Stack developer",
+  title: "Broller Marketplace",
+  description: "The best marketplace for your needs.",
   icons: {
-    icon: "/favicon.ico", // asosiy favicon
-    shortcut: "/favico.svg",
-    apple: "/apple.png", // iOS uchun
+    icon: "/favicon.ico", 
+    shortcut: "/favicon.ico",
+    apple: "/favico.svg", 
     other: {
       rel: "icon",
-      url: "/favico.svg", // qo'shimcha (Android va boshqalar)
+      url: "/favico.svg", 
     },
   },
 };
