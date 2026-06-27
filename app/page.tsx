@@ -5,6 +5,7 @@ import type { Kategoriya, Mahsulot } from "@/lib/types";
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
 import ProductCard from "@/components/site/ProductCard";
+import HeroCategoryRotator from "@/components/site/HeroCategoryRotator";
 
 async function getData() {
   try {
@@ -23,7 +24,7 @@ async function getData() {
         .eq("status", "faol")
         .order("tavsiya_etilgan", { ascending: false })
         .order("yaratilgan_vaqt", { ascending: false })
-        .limit(8),
+        .limit(4),
     ]);
     return {
       kategoriyalar: (kat.data ?? []) as Kategoriya[],
@@ -43,6 +44,7 @@ const afzalliklar = [
 
 export default async function Home() {
   const { kategoriyalar, mahsulotlar } = await getData();
+  const heroKategoriyalar = kategoriyalar.map((k) => k.nomi);
 
   return (
     <div className="min-h-screen bg-white font-sans text-zinc-900">
@@ -68,7 +70,8 @@ export default async function Home() {
               className="mt-5 font-bold leading-[1.05] tracking-[-0.03em]"
               style={{ fontSize: "clamp(34px, 5vw, 60px)" }}
             >
-              Broyler fermangiz uchun zamonaviy texnika
+              Broyler fermangiz uchun zamonaviy{" "}
+              <HeroCategoryRotator words={heroKategoriyalar} />
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-200">
               Konditsioner, ventilyatsiya, isitish va oziqlantirish tizimlari —
