@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createSupabaseServer } from "@/lib/supabase/server";
-import { formatNarx } from "@/lib/format";
+import { formatNarx, formatSana } from "@/lib/format";
+import { holatBelgisi } from "@/lib/buyurtma";
 
 type Qator = {
   nomi: string;
@@ -11,17 +12,40 @@ type Qator = {
   status: string;
 };
 
+type BuyurtmaQator = {
+  id: string;
+  raqam: number;
+  mijoz_ism: string;
+  holat: string;
+  jami: number;
+  valyuta: string;
+  yaratilgan_vaqt: string;
+};
+
 export default async function AdminHome() {
   const supabase = await createSupabaseServer();
 
-  const [{ count: userlarSoni }, { data: mahlar }] = await Promise.all([
+  const [
+    { count: userlarSoni },
+    { data: mahlar },
+    { data: oxirgiBuyurtmalar, count: buyurtmalarSoni },
+  ] = await Promise.all([
     supabase
       .from("foydalanuvchilar")
       .select("id", { count: "exact", head: true }),
     supabase
       .from("mahsulotlar")
       .select("nomi,slug,narxi,chegirma_narxi,ombor_soni,status"),
+    supabase
+      .from("buyurtmalar")
+      .select("id,raqam,mijoz_ism,holat,jami,valyuta,yaratilgan_vaqt", {
+        count: "exact",
+      })
+      .order("yaratilgan_vaqt", { ascending: false })
+      .limit(5),
   ]);
+
+  const buyurtmalar = (oxirgiBuyurtmalar ?? []) as BuyurtmaQator[];
 
   const mahsulotlar = (mahlar ?? []) as Qator[];
   const birlik = (m: Qator) =>
@@ -83,6 +107,77 @@ export default async function AdminHome() {
           icon="layers"
         />
       </div>
+
+      {/* so'nggi buyurtmalar */}
+      <section className="mt-8 rounded-2xl border border-zinc-200 bg-white">
+        <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4">
+          <div>
+            <h2 className="text-sm font-bold text-zinc-900">
+              So&apos;nggi buyurtmalar
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Jami {buyurtmalarSoni ?? 0} ta buyurtma.
+            </p>
+          </div>
+          <Link
+            href="/admin/orders"
+            className="text-sm font-semibold text-zinc-600 no-underline hover:text-zinc-900"
+          >
+            Barchasi →
+          </Link>
+        </div>
+
+        {buyurtmalar.length === 0 ? (
+          <p className="px-5 py-10 text-center text-sm text-zinc-500">
+            Hozircha buyurtma yo&apos;q.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                  <th className="px-5 py-3 font-semibold">Raqam</th>
+                  <th className="px-5 py-3 font-semibold">Mijoz</th>
+                  <th className="px-5 py-3 font-semibold">Sana</th>
+                  <th className="px-5 py-3 font-semibold">Jami</th>
+                  <th className="px-5 py-3 font-semibold">Holat</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {buyurtmalar.map((b) => {
+                  const st = holatBelgisi(b.holat);
+                  return (
+                    <tr key={b.id} className="text-zinc-700">
+                      <td className="px-5 py-3">
+                        <Link
+                          href={`/admin/orders/${b.id}`}
+                          className="font-semibold text-zinc-900 no-underline hover:underline"
+                        >
+                          #{b.raqam}
+                        </Link>
+                      </td>
+                      <td className="max-w-[180px] truncate px-5 py-3 font-medium text-zinc-900">
+                        {b.mijoz_ism}
+                      </td>
+                      <td className="px-5 py-3 whitespace-nowrap text-zinc-500">
+                        {formatSana(b.yaratilgan_vaqt)}
+                      </td>
+                      <td className="px-5 py-3">{formatNarx(b.jami, b.valyuta)}</td>
+                      <td className="px-5 py-3">
+                        <span
+                          className={`inline-block rounded-full px-2.5 py-1 text-xs font-semibold ${st.c}`}
+                        >
+                          {st.t}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       {/* ombor holati */}
       <section className="mt-8 rounded-2xl border border-zinc-200 bg-white">

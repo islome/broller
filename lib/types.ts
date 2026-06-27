@@ -37,3 +37,38 @@ export type MahsulotToliq = Mahsulot & {
   xususiyatlar: Record<string, string | number | boolean | null>;
   rasmlar: MahsulotRasm[];
 };
+
+export type BuyurtmaHolat =
+  | "yangi"
+  | "tasdiqlandi"
+  | "jonatildi"
+  | "yetkazildi"
+  | "bekor_qilindi";
+
+export type BuyurtmaElement = {
+  id: string;
+  mahsulot_id: string | null;
+  mahsulot_nomi: string;
+  mahsulot_slug: string | null;
+  asosiy_rasm: string | null;
+  birlik_narx: number;
+  soni: number;
+  valyuta: string;
+};
+
+export type Buyurtma = {
+  id: string;
+  raqam: number;
+  holat: BuyurtmaHolat;
+  yetkazish_usuli: "yetkazib_berish" | "olib_ketish";
+  tolov_turi: "naqd" | "karta";
+  mijoz_ism: string;
+  telefon: string;
+  viloyat: string | null;
+  manzil: string | null;
+  izoh: string | null;
+  valyuta: string;
+  jami: number;
+  yaratilgan_vaqt: string;
+  elementlar?: BuyurtmaElement[];
+};
