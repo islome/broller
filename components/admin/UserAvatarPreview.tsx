@@ -45,7 +45,7 @@ export default function UserAvatarPreview({
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-sm p-5 shadow-2xl"
+            className="w-full max-w-sm p-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mx-auto flex h-56 w-56 items-center justify-center overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100">
