@@ -101,11 +101,12 @@ export default function Navbar() {
 
           {kirgan ? (
             <div className="hidden items-center gap-3 md:flex">
-              {ism && (
-                <span className="max-w-[150px] truncate text-sm font-medium text-zinc-700">
-                  {ism}
-                </span>
-              )}
+              <Link
+                href="/profile"
+                className="max-w-[150px] truncate text-sm font-medium text-zinc-700 no-underline transition-colors hover:text-zinc-900"
+              >
+                {ism || "Profil"}
+              </Link>
               <button
                 type="button"
                 onClick={chiqish}
@@ -165,13 +166,22 @@ export default function Navbar() {
             ))}
             <li>
               {kirgan ? (
-                <button
-                  type="button"
-                  onClick={chiqish}
-                  className="mt-1 block w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-center text-sm font-semibold text-zinc-700"
-                >
-                  Chiqish{ism ? ` (${ism})` : ""}
-                </button>
+                <div className="mt-1 grid gap-2">
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="block rounded-xl bg-zinc-100 px-3 py-2.5 text-center text-sm font-semibold text-zinc-800 no-underline"
+                  >
+                    Profil{ism ? ` (${ism})` : ""}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={chiqish}
+                    className="block w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-center text-sm font-semibold text-zinc-700"
+                  >
+                    Chiqish
+                  </button>
+                </div>
               ) : (
                 <Link
                   href="/login"

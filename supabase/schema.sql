@@ -249,3 +249,32 @@ grant usage on schema public to anon, authenticated;
 grant select on public.kategoriyalar, public.mahsulotlar, public.mahsulot_rasmlari to anon, authenticated;
 grant select, update on public.foydalanuvchilar to authenticated;
 grant insert, update, delete on public.kategoriyalar, public.mahsulotlar, public.mahsulot_rasmlari to authenticated;
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- Storage: xaridor avatar rasmlari
+-- ──────────────────────────────────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "avatars_korish" on storage.objects;
+create policy "avatars_korish" on storage.objects
+  for select using (bucket_id = 'avatars');
+
+drop policy if exists "avatars_yuklash" on storage.objects;
+create policy "avatars_yuklash" on storage.objects
+  for insert with check (
+    bucket_id = 'avatars'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+drop policy if exists "avatars_tahrir" on storage.objects;
+create policy "avatars_tahrir" on storage.objects
+  for update using (
+    bucket_id = 'avatars'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  )
+  with check (
+    bucket_id = 'avatars'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
