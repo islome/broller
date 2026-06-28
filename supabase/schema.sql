@@ -279,6 +279,24 @@ create policy "avatars_tahrir" on storage.objects
     and auth.uid()::text = (storage.foldername(name))[1]
   );
 
+-- ──────────────────────────────────────────────────────────────────────────
+-- Storage: mahsulot rasmlari (admin yuklaydi, hamma ko'radi)
+-- ──────────────────────────────────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('mahsulot-rasmlari', 'mahsulot-rasmlari', true)
+on conflict (id) do update set public = true;
+
+-- hamma o'qiy oladi (mahsulot rasmlari ommaviy)
+drop policy if exists "mahsulot_rasm_korish" on storage.objects;
+create policy "mahsulot_rasm_korish" on storage.objects
+  for select using (bucket_id = 'mahsulot-rasmlari');
+
+-- yuklash / o'zgartirish / o'chirish — faqat admin
+drop policy if exists "mahsulot_rasm_admin" on storage.objects;
+create policy "mahsulot_rasm_admin" on storage.objects
+  for all using (bucket_id = 'mahsulot-rasmlari' and public.admin_mi())
+  with check (bucket_id = 'mahsulot-rasmlari' and public.admin_mi());
+
 -- ============================================================================
 -- BUYURTMALAR (orders) — checkout'da saqlanadi, admin boshqaradi
 -- ============================================================================

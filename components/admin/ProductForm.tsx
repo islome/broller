@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Kategoriya } from "@/lib/types";
 import type { FormHolat } from "@/app/admin/products/actions";
 import { slugify } from "@/lib/slug";
+import ProductImagePicker from "@/components/admin/ProductImagePicker";
 
 export type TahrirMahsulot = {
   nomi: string;
@@ -26,24 +27,18 @@ export type TahrirMahsulot = {
   xususiyatlar: Record<string, unknown>;
 };
 
-const RASMLAR = [
-  "/farm1.jpg",
-  "/farm2.jpg",
-  "/chicken1.jpg",
-  "/chicken2.jpg",
-  "/broller.jpg",
-];
-
 const boshHolat: FormHolat = { error: null };
 
 export default function ProductForm({
   kategoriyalar,
   action,
   mahsulot,
+  mavjudRasmlar = [],
 }: {
   kategoriyalar: Kategoriya[];
   action: (prev: FormHolat, formData: FormData) => Promise<FormHolat>;
   mahsulot?: TahrirMahsulot;
+  mavjudRasmlar?: string[];
 }) {
   const [state, formAction, pending] = useActionState(action, boshHolat);
 
@@ -53,11 +48,6 @@ export default function ProductForm({
   // tahrirda slug avtomatik qayta generatsiya qilinmasin
   const [slugTahrir, setSlugTahrir] = useState(tahrir);
   const slugQiymat = slugTahrir ? slug : slugify(nomi);
-
-  const rasmRoyxati =
-    mahsulot?.asosiy_rasm && !RASMLAR.includes(mahsulot.asosiy_rasm)
-      ? [mahsulot.asosiy_rasm, ...RASMLAR]
-      : RASMLAR;
 
   const xususiyatlarMatn =
     mahsulot && Object.keys(mahsulot.xususiyatlar ?? {}).length
@@ -129,6 +119,16 @@ export default function ProductForm({
         </Field>
       </Card>
 
+      {/* Rasmlar */}
+      <Card title="Rasmlar">
+        <div>
+          <span className="mb-1.5 block text-sm font-medium text-zinc-700">
+            Mahsulot rasmlari
+          </span>
+          <ProductImagePicker defaultRasmlar={mavjudRasmlar} />
+        </div>
+      </Card>
+
       {/* Narx va ombor */}
       <Card title="Narx va ombor">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -176,15 +176,6 @@ export default function ProductForm({
           </Field>
           <Field label="Artikul (SKU)">
             <input name="artikul" defaultValue={mahsulot?.artikul ?? ""} placeholder="CF-7500-AC" className={inp} />
-          </Field>
-          <Field label="Asosiy rasm">
-            <select name="asosiy_rasm" defaultValue={mahsulot?.asosiy_rasm ?? "/farm1.jpg"} className={inp}>
-              {rasmRoyxati.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
           </Field>
         </div>
 

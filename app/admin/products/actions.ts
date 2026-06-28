@@ -32,8 +32,23 @@ type MahsulotYozuv = {
 };
 
 type OqishNatija =
-  | { ok: true; data: MahsulotYozuv }
+  | { ok: true; data: MahsulotYozuv; rasmlar: string[] }
   | { ok: false; error: string };
+
+/** "rasmlar" yashirin maydonidan rasm URL'lari massivini o'qiydi (eng ko'pi 3 ta). */
+function rasmlarniOqi(formData: FormData): string[] {
+  const raw = String(formData.get("rasmlar") || "").trim();
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((u): u is string => typeof u === "string" && u.trim() !== "")
+      .slice(0, 3);
+  } catch {
+    return [];
+  }
+}
 
 /** FormData'dan mahsulot maydonlarini o'qiydi va tekshiradi (qo'shish/tahrir uchun umumiy). */
 function oqi(formData: FormData): OqishNatija {
@@ -91,8 +106,11 @@ function oqi(formData: FormData): OqishNatija {
     }
   }
 
+  const rasmlar = rasmlarniOqi(formData);
+
   return {
     ok: true,
+    rasmlar,
     data: {
       nomi,
       slug,
@@ -107,7 +125,8 @@ function oqi(formData: FormData): OqishNatija {
       status,
       ombor_soni,
       kafolat_oylari,
-      asosiy_rasm: String(formData.get("asosiy_rasm") || "").trim() || null,
+      // birinchi rasm — asosiy (ro'yxat/savat/buyurtmalarda ishlatiladi)
+      asosiy_rasm: rasmlar[0] ?? null,
       tavsif: String(formData.get("tavsif") || "").trim() || null,
       tavsiya_etilgan: formData.get("tavsiya_etilgan") === "on",
       xususiyatlar,
@@ -130,8 +149,23 @@ export async function mahsulotQoshish(
   if (!p.ok) return { error: p.error };
 
   const supabase = await createSupabaseServer();
-  const { error } = await supabase.from("mahsulotlar").insert(p.data);
+  const { data: yangi, error } = await supabase
+    .from("mahsulotlar")
+    .insert(p.data)
+    .select("id")
+    .single();
   if (error) return { error: xatoMatni(error) };
+
+  // galereya rasmlari (asosiy rasm mahsulot qatorida ham saqlanadi)
+  if (yangi && p.rasmlar.length) {
+    await supabase.from("mahsulot_rasmlari").insert(
+      p.rasmlar.map((url, i) => ({
+        mahsulot_id: yangi.id,
+        rasm_url: url,
+        tartib: i,
+      })),
+    );
+  }
 
   revalidatePath("/admin/products");
   revalidatePath("/admin");
@@ -155,6 +189,18 @@ export async function mahsulotYangilash(
     .update(p.data)
     .eq("id", id);
   if (error) return { error: xatoMatni(error) };
+
+  // galereyani sinxronlaymiz: eskisini o'chirib, joriy ro'yxatni qayta yozamiz
+  await supabase.from("mahsulot_rasmlari").delete().eq("mahsulot_id", id);
+  if (p.rasmlar.length) {
+    await supabase.from("mahsulot_rasmlari").insert(
+      p.rasmlar.map((url, i) => ({
+        mahsulot_id: id,
+        rasm_url: url,
+        tartib: i,
+      })),
+    );
+  }
 
   revalidatePath("/admin/products");
   revalidatePath("/admin");

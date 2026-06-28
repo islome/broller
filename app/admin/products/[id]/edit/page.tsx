@@ -17,7 +17,7 @@ export default async function MahsulotTahrir({
     supabase
       .from("mahsulotlar")
       .select(
-        "id,nomi,slug,kategoriya_id,tavsif,brend,model,artikul,narxi,chegirma_narxi,valyuta,holati,status,ombor_soni,kafolat_oylari,asosiy_rasm,tavsiya_etilgan,xususiyatlar",
+        "id,nomi,slug,kategoriya_id,tavsif,brend,model,artikul,narxi,chegirma_narxi,valyuta,holati,status,ombor_soni,kafolat_oylari,asosiy_rasm,tavsiya_etilgan,xususiyatlar,rasmlar:mahsulot_rasmlari(rasm_url,tartib)",
       )
       .eq("id", id)
       .maybeSingle(),
@@ -32,6 +32,19 @@ export default async function MahsulotTahrir({
 
   const mahsulot = m as unknown as TahrirMahsulot & { nomi: string };
   const kategoriyalar = (kat ?? []) as Kategoriya[];
+
+  // mavjud galereya rasmlari (tartib bo'yicha); bo'lmasa — eski asosiy rasm
+  const galereya = (
+    (m as { rasmlar?: { rasm_url: string; tartib: number }[] }).rasmlar ?? []
+  )
+    .slice()
+    .sort((a, b) => a.tartib - b.tartib)
+    .map((r) => r.rasm_url);
+  const mavjudRasmlar = galereya.length
+    ? galereya
+    : mahsulot.asosiy_rasm
+      ? [mahsulot.asosiy_rasm]
+      : [];
 
   return (
     <div>
@@ -53,6 +66,7 @@ export default async function MahsulotTahrir({
         kategoriyalar={kategoriyalar}
         action={mahsulotYangilash.bind(null, id)}
         mahsulot={mahsulot}
+        mavjudRasmlar={mavjudRasmlar}
       />
     </div>
   );
