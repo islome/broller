@@ -28,7 +28,6 @@ type MahsulotYozuv = {
   asosiy_rasm: string | null;
   tavsif: string | null;
   tavsiya_etilgan: boolean;
-  xususiyatlar: Record<string, unknown>;
 };
 
 type OqishNatija =
@@ -88,24 +87,6 @@ function oqi(formData: FormData): OqishNatija {
   const statusRaw = String(formData.get("status") || "faol");
   const status = STATUSLAR.includes(statusRaw) ? statusRaw : "faol";
 
-  let xususiyatlar: Record<string, unknown> = {};
-  const xRaw = String(formData.get("xususiyatlar") || "").trim();
-  if (xRaw) {
-    try {
-      const parsed = JSON.parse(xRaw);
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        xususiyatlar = parsed as Record<string, unknown>;
-      } else {
-        return {
-          ok: false,
-          error: 'Xususiyatlar JSON obyekt bo\'lishi kerak: {"kalit":"qiymat"}',
-        };
-      }
-    } catch {
-      return { ok: false, error: "Xususiyatlar JSON formati noto'g'ri." };
-    }
-  }
-
   const rasmlar = rasmlarniOqi(formData);
 
   return {
@@ -129,7 +110,6 @@ function oqi(formData: FormData): OqishNatija {
       asosiy_rasm: rasmlar[0] ?? null,
       tavsif: String(formData.get("tavsif") || "").trim() || null,
       tavsiya_etilgan: formData.get("tavsiya_etilgan") === "on",
-      xususiyatlar,
     },
   };
 }

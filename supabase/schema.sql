@@ -91,8 +91,6 @@ create table if not exists public.mahsulotlar (
   status           public.mahsulot_status not null default 'faol',
   ombor_soni       integer not null default 0 check (ombor_soni >= 0),
   kafolat_oylari   integer not null default 0 check (kafolat_oylari >= 0),
-  -- moslashuvchan texnik xususiyatlar: {"quvvat_kw":7.5,"kuchlanish":380,...}
-  xususiyatlar     jsonb not null default '{}'::jsonb,
   asosiy_rasm      text,
   tavsiya_etilgan  boolean not null default false,
   korishlar_soni   integer not null default 0,
@@ -111,7 +109,6 @@ create index if not exists mahsulotlar_status_idx     on public.mahsulotlar (sta
 create index if not exists mahsulotlar_tavsiya_idx    on public.mahsulotlar (tavsiya_etilgan);
 create index if not exists mahsulotlar_yaratilgan_idx on public.mahsulotlar (yaratilgan_vaqt desc);
 create index if not exists mahsulotlar_qidiruv_idx    on public.mahsulotlar using gin (qidiruv_vektori);
-create index if not exists mahsulotlar_xususiyat_idx  on public.mahsulotlar using gin (xususiyatlar);
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- 4) MAHSULOT_RASMLARI — galereya

@@ -17,14 +17,13 @@ on conflict (slug) do nothing;
 -- ── Mahsulotlar ────────────────────────────────────────────────────────────
 insert into public.mahsulotlar
   (kategoriya_id, nomi, slug, tavsif, brend, model, artikul, narxi, valyuta,
-   holati, status, ombor_soni, kafolat_oylari, xususiyatlar, asosiy_rasm, tavsiya_etilgan)
+   holati, status, ombor_soni, kafolat_oylari, asosiy_rasm, tavsiya_etilgan)
 values
   ((select id from public.kategoriyalar where slug = 'iqlim-nazorati'),
    'Broyler ferma konditsioneri 7.5 kVt', 'broyler-konditsioner-7-5kvt',
    'Katta hajmli broyler fermalari uchun sanoat konditsioneri. Avtomatik harorat nazorati.',
    'ClimaFarm', 'CF-7500', 'CF-7500-AC', 12500000, 'UZS',
    'yangi', 'faol', 8, 24,
-   '{"quvvat_kw":7.5,"kuchlanish":380,"maydon_m2":120,"shovqin_db":48,"energiya_klassi":"A"}'::jsonb,
    '/farm1.jpg', true),
 
   ((select id from public.kategoriyalar where slug = 'ventilyatsiya'),
@@ -32,7 +31,6 @@ values
    'Yuqori unumdorlikdagi devor fani. Ferma havosini samarali almashtiradi.',
    'AirPro', 'AP-50', 'AP-50-FAN', 3200000, 'UZS',
    'yangi', 'faol', 25, 12,
-   '{"havo_oqimi_m3h":13000,"diametr_sm":50,"kuchlanish":220,"quvvat_vt":550}'::jsonb,
    '/farm2.jpg', true),
 
   ((select id from public.kategoriyalar where slug = 'isitish-tizimlari'),
@@ -40,7 +38,6 @@ values
    'Jo''jalar uchun samarali infraqizil isitish. Gaz bilan ishlaydi.',
    'HeatMax', 'HM-30G', 'HM-30G-HEAT', 4800000, 'UZS',
    'yangi', 'faol', 15, 12,
-   '{"quvvat_kw":30,"yoqilgi":"gaz","maydon_m2":150,"yoqish":"avtomatik"}'::jsonb,
    '/chicken2.jpg', false),
 
   ((select id from public.kategoriyalar where slug = 'oziqlantirish'),
@@ -48,7 +45,6 @@ values
    'To''liq avtomatlashtirilgan oziqlantirish tizimi, 5000 boshgacha.',
    'FeedLine', 'FL-5000', 'FL-5000-FEED', 22000000, 'UZS',
    'yangi', 'faol', 4, 36,
-   '{"sigim_bosh":5000,"tur":"avtomatik","tarelka_soni":120}'::jsonb,
    '/chicken1.jpg', true),
 
   ((select id from public.kategoriyalar where slug = 'suv-taminoti'),
@@ -56,7 +52,6 @@ values
    'Gigiyenik niplel suv liniyasi, bosim regulyatori bilan.',
    'AquaBird', 'AB-100', 'AB-100-WATER', 5600000, 'UZS',
    'yangi', 'faol', 10, 18,
-   '{"uzunlik_m":100,"niplel_soni":160,"bosim_regulyatori":true}'::jsonb,
    '/farm1.jpg', false)
 on conflict (slug) do nothing;
 

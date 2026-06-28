@@ -11,7 +11,7 @@ import ProductGallery from "@/components/site/ProductGallery";
 import ProductActions from "@/components/site/ProductActions";
 
 const SELECT =
-  "id,nomi,slug,tavsif,brend,model,artikul,narxi,chegirma_narxi,valyuta,holati,ombor_soni,kafolat_oylari,xususiyatlar,asosiy_rasm,tavsiya_etilgan,kategoriya:kategoriyalar(nomi,slug),rasmlar:mahsulot_rasmlari(id,rasm_url,alt_matn,tartib)";
+  "id,nomi,slug,tavsif,brend,model,artikul,narxi,chegirma_narxi,valyuta,holati,ombor_soni,kafolat_oylari,asosiy_rasm,tavsiya_etilgan,kategoriya:kategoriyalar(nomi,slug),rasmlar:mahsulot_rasmlari(id,rasm_url,alt_matn,tartib)";
 
 // React cache — metadata va sahifa bir so'rovda DB'ga ikki marta bormasligi uchun
 const getMahsulot = cache(async (slug: string): Promise<MahsulotToliq | null> => {
@@ -69,8 +69,6 @@ export default async function MahsulotSahifa({
     .sort((a, b) => a.tartib - b.tartib)
     .map((r) => r.rasm_url);
   const images = rasmlar.length ? rasmlar : m.asosiy_rasm ? [m.asosiy_rasm] : [];
-
-  const xususiyatlar = Object.entries(m.xususiyatlar ?? {});
 
   // savat/sevimli uchun toza Mahsulot obyekti
   const kartaMahsulot: Mahsulot = {
@@ -202,45 +200,9 @@ export default async function MahsulotSahifa({
             )}
           </div>
         </div>
-
-        {/* texnik xususiyatlar */}
-        {xususiyatlar.length > 0 && (
-          <section className="mt-14 max-w-3xl">
-            <h2 className="text-lg font-bold tracking-tight text-zinc-900">
-              Texnik xususiyatlar
-            </h2>
-            <dl className="mt-4 overflow-hidden rounded-2xl border border-zinc-200">
-              {xususiyatlar.map(([kalit, qiymat], idx) => (
-                <div
-                  key={kalit}
-                  className={`flex items-center justify-between gap-4 px-5 py-3.5 text-sm ${
-                    idx % 2 === 1 ? "bg-zinc-50" : "bg-white"
-                  }`}
-                >
-                  <dt className="text-zinc-500">{xususiyatLabel(kalit)}</dt>
-                  <dd className="text-right font-medium text-zinc-900">
-                    {xususiyatQiymat(qiymat)}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
       </div>
 
       <Footer />
     </div>
   );
-}
-
-/** "quvvat_kw" → "Quvvat kw" */
-function xususiyatLabel(kalit: string): string {
-  const s = kalit.replace(/_/g, " ");
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function xususiyatQiymat(qiymat: string | number | boolean | null): string {
-  if (typeof qiymat === "boolean") return qiymat ? "Ha" : "Yo'q";
-  if (qiymat === null) return "—";
-  return String(qiymat);
 }

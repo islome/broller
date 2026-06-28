@@ -24,7 +24,6 @@ export type TahrirMahsulot = {
   kafolat_oylari: number;
   asosiy_rasm: string | null;
   tavsiya_etilgan: boolean;
-  xususiyatlar: Record<string, unknown>;
 };
 
 const boshHolat: FormHolat = { error: null };
@@ -48,11 +47,6 @@ export default function ProductForm({
   // tahrirda slug avtomatik qayta generatsiya qilinmasin
   const [slugTahrir, setSlugTahrir] = useState(tahrir);
   const slugQiymat = slugTahrir ? slug : slugify(nomi);
-
-  const xususiyatlarMatn =
-    mahsulot && Object.keys(mahsulot.xususiyatlar ?? {}).length
-      ? JSON.stringify(mahsulot.xususiyatlar, null, 2)
-      : "";
 
   return (
     <form action={formAction} className="space-y-6">
@@ -178,19 +172,6 @@ export default function ProductForm({
             <input name="artikul" defaultValue={mahsulot?.artikul ?? ""} placeholder="CF-7500-AC" className={inp} />
           </Field>
         </div>
-
-        <Field
-          label="Texnik xususiyatlar (JSON)"
-          hint='ixtiyoriy, masalan: {"quvvat_kw": 7.5, "kuchlanish": 380}'
-        >
-          <textarea
-            name="xususiyatlar"
-            rows={3}
-            defaultValue={xususiyatlarMatn}
-            placeholder='{"quvvat_kw": 7.5, "kuchlanish": 380}'
-            className={`${inp} font-mono text-xs`}
-          />
-        </Field>
 
         <label className="mt-2 flex w-fit cursor-pointer items-center gap-2.5 select-none">
           <input

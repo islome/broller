@@ -17,7 +17,7 @@ export default async function MahsulotTahrir({
     supabase
       .from("mahsulotlar")
       .select(
-        "id,nomi,slug,kategoriya_id,tavsif,brend,model,artikul,narxi,chegirma_narxi,valyuta,holati,status,ombor_soni,kafolat_oylari,asosiy_rasm,tavsiya_etilgan,xususiyatlar,rasmlar:mahsulot_rasmlari(rasm_url,tartib)",
+        "id,nomi,slug,kategoriya_id,tavsif,brend,model,artikul,narxi,chegirma_narxi,valyuta,holati,status,ombor_soni,kafolat_oylari,asosiy_rasm,tavsiya_etilgan,rasmlar:mahsulot_rasmlari(rasm_url,tartib)",
       )
       .eq("id", id)
       .maybeSingle(),

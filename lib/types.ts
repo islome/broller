@@ -29,12 +29,11 @@ export type MahsulotRasm = {
   tartib: number;
 };
 
-/** Mahsulot sahifasi uchun to'liq ma'lumot (galereya + texnik xususiyatlar). */
+/** Mahsulot sahifasi uchun to'liq ma'lumot (galereya bilan). */
 export type MahsulotToliq = Mahsulot & {
   model: string | null;
   artikul: string | null;
   kafolat_oylari: number;
-  xususiyatlar: Record<string, string | number | boolean | null>;
   rasmlar: MahsulotRasm[];
 };
 
