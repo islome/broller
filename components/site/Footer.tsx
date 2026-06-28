@@ -43,9 +43,9 @@ export default function Footer() {
               Aloqa
             </h4>
             <ul className="space-y-2 text-sm text-zinc-600">
-              <li>+998 (90) 123-45-67</li>
+              <li>+998 (88) 217-55-55</li>
               <li>info@broller.uz</li>
-              <li>Toshkent, O&apos;zbekiston</li>
+              <li>Namangan, O&apos;zbekiston</li>
             </ul>
           </div>
         </div>
