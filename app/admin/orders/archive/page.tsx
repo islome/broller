@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { createSupabaseServer } from "@/lib/supabase/server";
-import { FAOL_HOLATLAR } from "@/lib/buyurtma";
+import { ARXIV_HOLATLAR } from "@/lib/buyurtma";
 import OrdersTable, { type BuyurtmaQator } from "@/components/admin/OrdersTable";
 
-export default async function AdminOrders() {
+export default async function AdminOrdersArchive() {
   const supabase = await createSupabaseServer();
   const { data, count } = await supabase
     .from("buyurtmalar")
@@ -11,7 +11,7 @@ export default async function AdminOrders() {
       "id,raqam,mijoz_ism,telefon,holat,jami,valyuta,yaratilgan_vaqt,elementlar:buyurtma_elementlari(soni)",
       { count: "exact" },
     )
-    .in("holat", FAOL_HOLATLAR)
+    .in("holat", ARXIV_HOLATLAR)
     .order("yaratilgan_vaqt", { ascending: false });
 
   const buyurtmalar = (data ?? []) as unknown as BuyurtmaQator[];
@@ -21,30 +21,26 @@ export default async function AdminOrders() {
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
-            Buyurtmalar
+            Arxiv buyurtmalar
           </h1>
           <p className="mt-1 text-sm text-zinc-500">
             <span className="font-semibold text-zinc-900">{count ?? 0}</span> ta
-            faol buyurtma (yangi, tasdiqlangan, jo&apos;natilgan).
+            tugallangan yoki bekor qilingan buyurtma.
           </p>
         </div>
         <Link
-          href="/admin/orders/archive"
+          href="/admin/orders"
           className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-300 px-3.5 py-2 text-sm font-semibold text-zinc-700 no-underline transition-colors hover:bg-zinc-100"
         >
-          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-            <rect x="3" y="4" width="18" height="4" rx="1" />
-            <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
-            <line x1="10" y1="12" x2="14" y2="12" />
+          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
           </svg>
-          Arxiv
+          Faol buyurtmalar
         </Link>
       </header>
 
-      <OrdersTable
-        buyurtmalar={buyurtmalar}
-        bosh="Hozircha faol buyurtma yo'q."
-      />
+      <OrdersTable buyurtmalar={buyurtmalar} bosh="Arxivda buyurtma yo'q." />
     </div>
   );
 }

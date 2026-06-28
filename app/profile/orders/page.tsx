@@ -34,6 +34,8 @@ export default async function MyOrdersPage() {
       `id,raqam,holat,yetkazish_usuli,tolov_turi,mijoz_ism,telefon,viloyat,manzil,izoh,valyuta,jami,yaratilgan_vaqt,elementlar:buyurtma_elementlari(${ELEMENT_SELECT})`,
     )
     .eq("foydalanuvchi_id", user.id)
+    // bekor qilingan buyurtmalar xaridorga ko'rsatilmaydi
+    .neq("holat", "bekor_qilindi")
     .order("yaratilgan_vaqt", { ascending: false });
 
   const buyurtmalar = (data ?? []) as unknown as Buyurtma[];

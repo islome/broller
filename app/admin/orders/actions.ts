@@ -29,6 +29,7 @@ export async function buyurtmaHolatYangilash(
 
   revalidatePath(`/admin/orders/${id}`);
   revalidatePath("/admin/orders");
+  revalidatePath("/admin/orders/archive");
   revalidatePath("/profile/orders");
   return { error: null, ok: true };
 }

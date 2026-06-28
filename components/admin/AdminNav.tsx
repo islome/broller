@@ -7,6 +7,7 @@ import { createSupabaseBrowser } from "@/lib/supabase/client";
 const links = [
   { href: "/admin", label: "Boshqaruv paneli", icon: "grid" },
   { href: "/admin/orders", label: "Buyurtmalar", icon: "bag" },
+  { href: "/admin/orders/archive", label: "Arxiv buyurtmalar", icon: "archive" },
   { href: "/admin/products", label: "Mahsulotlar", icon: "box" },
   { href: "/admin/users", label: "Foydalanuvchilar", icon: "users" },
 ];
@@ -22,8 +23,17 @@ export default function AdminNav({ ism }: { ism: string }) {
     router.refresh();
   }
 
-  const aktivMi = (href: string) =>
-    href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+  const aktivMi = (href: string) => {
+    if (href === "/admin") return pathname === "/admin";
+    // "Buyurtmalar" arxiv sahifasida faollashmasin (arxiv alohida havola)
+    if (href === "/admin/orders")
+      return (
+        pathname === "/admin/orders" ||
+        (pathname.startsWith("/admin/orders/") &&
+          !pathname.startsWith("/admin/orders/archive"))
+      );
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -151,6 +161,14 @@ function NavIcon({ name }: { name: string }) {
         <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
         <line x1="3" y1="6" x2="21" y2="6" />
         <path d="M16 10a4 4 0 01-8 0" />
+      </svg>
+    );
+  if (name === "archive")
+    return (
+      <svg {...c}>
+        <rect x="3" y="4" width="18" height="4" rx="1" />
+        <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
+        <line x1="10" y1="12" x2="14" y2="12" />
       </svg>
     );
   if (name === "external")

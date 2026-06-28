@@ -18,6 +18,7 @@ export async function buyurtmaBekorQil(id: string): Promise<BekorNatija> {
 
   revalidatePath("/profile/orders");
   revalidatePath("/admin/orders");
+  revalidatePath("/admin/orders/archive");
   revalidatePath("/admin");
   return { ok: true };
 }

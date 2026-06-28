@@ -17,6 +17,16 @@ export function holatBelgisi(holat: string): { t: string; c: string } {
   return HOLAT_MAP[holat] ?? { t: holat, c: "bg-zinc-100 text-zinc-600" };
 }
 
+/** Admin "Buyurtmalar" paneli — faol (jarayondagi) holatlar. */
+export const FAOL_HOLATLAR: BuyurtmaHolat[] = [
+  "yangi",
+  "tasdiqlandi",
+  "jonatildi",
+];
+
+/** Admin "Arxiv buyurtmalar" — tugallangan yoki bekor qilingan holatlar. */
+export const ARXIV_HOLATLAR: BuyurtmaHolat[] = ["yetkazildi", "bekor_qilindi"];
+
 /** Xaridor faqat shu holatlardagi buyurtmani bekor qila oladi. */
 export const BEKOR_QILSA_BOLADI: BuyurtmaHolat[] = ["yangi", "tasdiqlandi"];
 
